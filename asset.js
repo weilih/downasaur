@@ -14,17 +14,16 @@ window.onload = () => {
     context.drawImage(ground, 0, 200);
   }
 
+  var lastDraw = 0;
 
-  var gameID;
-  gameLoop = (lastDraw) => {
-    gameID = window.requestAnimationFrame((timestamp) => {
-      shouldDraw = (timestamp - lastDraw) >= 300
-      if(shouldDraw){
-        lastDraw = timestamp;
-        console.log("draw");
-        context.clearRect(0, 0, 70, 200)
-        context.drawImage(dino, 0, 130);
-      }
+  loop = (timestamp) => {
+    shouldDraw = (timestamp - lastDraw) >= 300;
+    if(shouldDraw){
+      lastDraw = timestamp;
+      console.log("draw");
+      context.clearRect(0, 0, 70, 200);
+      context.drawImage(dino, 0, 130);
+    }
 
       window.addEventListener("keypress", (event) => {
         switch(event.key){
@@ -33,13 +32,10 @@ window.onload = () => {
             context.drawImage(dino, 0, 40);
             break;
         }
-
-        // console.log(key + " presesd");
       });
 
-      gameLoop(lastDraw);
-    })
+    window.requestAnimationFrame(loop);
   }
 
-  gameLoop(0);
+  gameID = window.requestAnimationFrame(loop);
 };
