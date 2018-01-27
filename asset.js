@@ -10,7 +10,7 @@ window.onload = () => {
   dino_img.src = "images/dino.png";
   dino = {
     img: dino_img, x: 0, y: 130,
-    high_jump: (130 - 70),
+    high_jump: 0,
     jump_power: 30,
     action: null
   }
@@ -26,6 +26,14 @@ window.onload = () => {
     }
   }
 
+  gravityForce = (dino) => {
+    if(dino.action === "jump") return;
+
+    if(dino.y < 130){
+      dino.action = "fall"
+      dino.y += 15;
+    }else{
+      dino.action = null;
     }
   }
 
@@ -45,6 +53,8 @@ window.onload = () => {
       context.clearRect(0, 0, 480, 200);
 
       jumpDino(dino);
+      gravityForce(dino);
+
       context.drawImage(dino.img, dino.x, dino.y);
 
       if(typeof(tree) === "undefined"){ tree = planTree(); }
