@@ -9,7 +9,7 @@ window.onload = () => {
   dino_img = new Image();
   dino_img.src = "images/dino.png";
   dino = {
-    img: dino_img, x: 0, y: 130,
+    img: dino_img, x: 0, y: 145,
     high_jump: 0,
     jump_power: 30,
     action: null
@@ -29,12 +29,17 @@ window.onload = () => {
   gravityForce = (dino) => {
     if(dino.action === "jump") return;
 
-    if(dino.y < 130){
+    if(dino.y < 145){
       dino.action = "fall"
       dino.y += 15;
     }else{
       dino.action = null;
     }
+  }
+
+  collision = (dino, tree) => {
+    if(tree.x + tree.img.width < 0) return false;
+    if(dino.img.width > tree.x && dino.y + dino.img.height > tree.y) return true;
   }
 
   tree_img = new Image();
@@ -46,34 +51,34 @@ window.onload = () => {
 
   var lastDraw = 0;
 
-  loop = (timestamp) => {
-    shouldDraw = (timestamp - lastDraw) >= 150;
+  function loop(timestamp){
+    shouldDraw = (timestamp - lastDraw) >= 100;
     if(shouldDraw){
       lastDraw = timestamp;
-      context.clearRect(0, 0, 480, 200);
+
+      if(typeof(tree) !== "undefined" && collision(dino, tree)){ return; }
 
       jumpDino(dino);
       gravityForce(dino);
 
-      context.drawImage(dino.img, dino.x, dino.y);
-
       if(typeof(tree) === "undefined"){ tree = planTree(); }
       if(typeof(tree) && tree.x < -100){ tree = planTree(); }
       if(typeof(tree)) { moveTree(tree); }
+
+      context.clearRect(0, 0, 480, 200);
+      context.drawImage(dino.img, dino.x, dino.y);
       context.drawImage(tree.img, tree.x, tree.y);
     }
 
     window.addEventListener("keypress", (event) => {
       switch(event.key){
         case ' ':
-          context.clearRect(0, 0, 70, 200);
           if(dino.action === null ) { dino.action = "jump"; }
           break;
       }
     });
-
     window.requestAnimationFrame(loop);
   }
 
-  gameID = window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(loop);
 };
