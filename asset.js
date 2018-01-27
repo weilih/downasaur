@@ -46,7 +46,7 @@ window.onload = () => {
   tree_img.src = "images/tree.png";
   tree_img.onload = () => { context.drawImage(tree_img, 500, 140); }
 
-  planTree = (w = 0) => { return { img: tree_img, x: 450 + w, y: 140 }; }
+  plantTree = (w = 0) => { return { img: tree_img, x: 450 + w, y: 140 }; }
   moveTree = (tree) => { return (tree.x -= 20); }
 
   var lastDraw = 0;
@@ -56,13 +56,23 @@ window.onload = () => {
     if(shouldDraw){
       lastDraw = timestamp;
 
-      if(typeof(tree) !== "undefined" && collision(dino, tree)){ return; }
+      if(typeof(tree) !== "undefined" && collision(dino, tree)){
+        context.font = "38px Arial";
+        context.fillStyle = "red";
+        context.textAlign = "center";
+        context.fillText("Game Over", canvas.width/2, canvas.height/2);
+        return;
+      }
 
       jumpDino(dino);
       gravityForce(dino);
 
-      if(typeof(tree) === "undefined"){ tree = planTree(); }
-      if(typeof(tree) && tree.x < -100){ tree = planTree(); }
+      if(typeof(tree) === "undefined"){ tree = plantTree(); }
+      if(typeof(tree) && tree.x < -100){
+        gap = Math.floor(Math.random() * 401);
+        tree = plantTree(gap);
+      }
+
       if(typeof(tree)) { moveTree(tree); }
 
       context.clearRect(0, 0, 480, 200);
